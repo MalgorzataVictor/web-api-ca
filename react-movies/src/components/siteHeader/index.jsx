@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -8,24 +8,24 @@ import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { useNavigate } from "react-router";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import img from '../../images/logo.png';
-import CardMedia from "@mui/material/CardMedia";
-import CloseIcon from "@mui/icons-material/Close";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from '@mui/material/Divider';
+import { useNavigate, Link } from "react-router";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import CardMedia from "@mui/material/CardMedia";
+import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
 
-
-
-
+import img from '../../images/logo.png';
+import { AuthContext } from "../../contexts/authContext";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 const SiteHeader = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const context = useContext(AuthContext);
   const navigate = useNavigate();
 
   const menuOptions = [
@@ -48,13 +48,16 @@ const SiteHeader = () => {
   return (
     <>
       <AppBar position="fixed" sx={{ backgroundColor: "#cc0000" }}>
-        <Toolbar sx={{ justifyContent: "space-between", position: "relative" }}>
+        <Toolbar sx={{ position: "relative" }}>
+          {/* Left: Logo */}
           <CardMedia
             component="img"
             image={img}
             alt="Logo"
             sx={{ height: 64, width: 128 }}
           />
+
+          {/* Centered Title */}
           <Box
             sx={{
               position: "absolute",
@@ -67,11 +70,54 @@ const SiteHeader = () => {
               Malgosia Movies
             </Typography>
           </Box>
-          <IconButton color="inherit" edge="end" onClick={() => setDrawerOpen(true)}>
+
+          {/* Auth Buttons - positioned between title and drawer icon */}
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 1,
+              position: "absolute",
+              right: 48, // distance from the right edge / drawer icon
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          >
+            {context.isAuthenticated ? (
+              <>
+                <Typography component="span" sx={{ fontWeight: "bold" }}>
+                  Welcome, {context.userName}!
+                </Typography>
+                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => context.signout()}>
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => navigate("/login")}>
+                  Login
+                </Button>
+                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => navigate("/signup")}>
+                  Signup
+                </Button>
+              </>
+            )}
+          </Box>
+
+          {/* Right: Drawer Icon */}
+          <IconButton
+            color="inherit"
+            edge="end"
+            onClick={() => setDrawerOpen(true)}
+            sx={{ position: "absolute", right: 0 }}
+          >
             <MenuIcon />
           </IconButton>
         </Toolbar>
+
+
       </AppBar>
+
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -147,12 +193,9 @@ const SiteHeader = () => {
                   </ListItemButton>
                 </ListItem>
 
-              
                 {(index === 0 || index === 2 || index === 7) && (
                   <>
                     <Divider sx={{ my: 1, backgroundColor: "rgba(255,255,255,0.3)" }} />
-
-                  
                     {index === 2 && (
                       <Typography
                         variant="h6"
@@ -188,10 +231,8 @@ const SiteHeader = () => {
               </React.Fragment>
             ))}
           </List>
-
         </Box>
       </Drawer>
-
 
       <Offset />
     </>
