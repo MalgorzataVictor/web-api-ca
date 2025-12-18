@@ -1,44 +1,96 @@
-import React from "react";
-import { useContext, useState } from "react";
-import { Navigate, useLocation } from "react-router";
-import { AuthContext } from '../contexts/authContext';
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { Navigate, useLocation, Link } from "react-router";
+import { AuthContext } from "../contexts/authContext";
+import { Box, TextField, Button, Typography, Paper } from "@mui/material";
 
 const LoginPage = () => {
-    const context = useContext(AuthContext);
+  const context = useContext(AuthContext);
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const location = useLocation();
 
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
+  const { from } = location.state
+    ? { from: location.state.from.pathname }
+    : { from: "/home" };
 
-    const login = () => {
-        context.authenticate(userName, password);
-    };
+  const login = () => {
+    context.authenticate(userName, password);
+  };
 
-    let location = useLocation();
+  if (context.isAuthenticated) {
+    return <Navigate to={from} />;
+  }
 
-    // Set 'from' to path where browser is redirected after a successful login - either / or the protected path user requested
-    const { from } = location.state ? { from: location.state.from.pathname } : { from: "/home" };
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#f5f5f5",
+        p: 2,
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: 400,
+          borderRadius: 3,
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}>
+          Login
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 3, color: "#555" }}>
+          You must log in to access protected pages
+        </Typography>
 
-    if (context.isAuthenticated === true) {
-        return <Navigate to={from} />;
-    }
+        <TextField
+          label="Username"
+          variant="outlined"
+          fullWidth
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{ mb: 3 }}
+        />
 
-    return (
-        <>
-            <h2>Login page</h2>
-            <p>You must log in to view the protected pages </p>
-            <input id="username" placeholder="user name" onChange={e => {
-                setUserName(e.target.value);
-            }}></input><br />
-            <input id="password" type="password" placeholder="password" onChange={e => {
-                setPassword(e.target.value);
-            }}></input><br />
-            {/* Login web form  */}
-            <button onClick={login}>Log in</button>
-            <p>Not Registered?
-                <Link to="/signup">Sign Up!</Link></p>
-        </>
-    );
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={login}
+          sx={{
+            backgroundColor: "#cc0000",
+            "&:hover": { backgroundColor: "#990000" },
+            mb: 2,
+            py: 1.5,
+            fontWeight: "bold",
+          }}
+        >
+          Log In
+        </Button>
+
+        <Typography variant="body2">
+          Not registered?{" "}
+          <Link to="/signup" style={{ color: "#cc0000", fontWeight: "bold", textDecoration: "none" }}>
+            Sign Up
+          </Link>
+        </Typography>
+      </Paper>
+    </Box>
+  );
 };
 
 export default LoginPage;
