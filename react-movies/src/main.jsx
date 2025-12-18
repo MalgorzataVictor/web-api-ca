@@ -22,6 +22,14 @@ import NowPlayingMoviePage from "./pages/nowPlayingMoviesPage";
 import WatchlistMoviesPage from "./pages/watchlistMoviesPage";
 import PopularActors from "./pages/popularActors";
 
+import StartPage from "./pages/startPage";
+import LoginPage from "./pages/loginPage";
+import SignupPage from "./pages/signupPage";
+import ProfilePage from "./pages/profilePage";
+
+import AuthContextProvider from "./contexts/authContext";
+import ProtectedRoutes from "./protectedRoutes";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -40,6 +48,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <BrowserRouter>
+          <AuthContextProvider>
           <SiteHeader />
           <MoviesContextProvider>
             <Routes>
@@ -55,10 +64,19 @@ const App = () => {
               <Route path="/reviews/:id" element={<MovieReviewPage />} />
               <Route path="/movies/:id" element={<MoviePage />} />
               <Route path="/actors/:id" element={<ActorPage />} />
-              <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />
+
+              <Route path="/" element={< StartPage />} />
+              <Route path="/login" element={< LoginPage />} />
+              <Route path="/signup" element={< SignupPage />} />
+              <Route path="/profile" element={< ProfilePage />} />
+
+              <Route element={<ProtectedRoutes />}></Route>
+
             </Routes>
           </MoviesContextProvider>
+          </AuthContextProvider>
         </BrowserRouter>
         <ReactQueryDevtools initialIsOpen={false} />
       </HelmetProvider>

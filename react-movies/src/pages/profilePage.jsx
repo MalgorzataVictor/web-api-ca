@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import React from "react";
 
 const ProfilePage = () => {
     const navigate = useNavigate();
