@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../contexts/authContext";
-import { Box, TextField, Button, Typography, Paper } from "@mui/material";
+import { Box, TextField, Button, Typography, Paper, LinearProgress } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 const SignUpPage = () => {
   const context = useContext(AuthContext);
@@ -12,38 +14,61 @@ const SignUpPage = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errors, setErrors] = useState({});
 
+
+  const requirements = [
+    {
+      label: "At least 8 characters",
+      test: (pw) => pw.length >= 8,
+    },
+    {
+      label: "At least 1 uppercase letter",
+      test: (pw) => /[A-Z]/.test(pw),
+    },
+    {
+      label: "At least 1 lowercase letter",
+      test: (pw) => /[a-z]/.test(pw),
+    },
+    {
+      label: "At least 1 number",
+      test: (pw) => /\d/.test(pw),
+    },
+    {
+      label: "At least 1 symbol (@$!%*#?&)",
+      test: (pw) => /[@$!%*#?&]/.test(pw),
+    },
+  ];
+
+  const getPasswordStrength = () => requirements.filter((r) => r.test(password)).length;
+
+  const getStrengthColor = () => {
+    const score = getPasswordStrength();
+    if (score <= 2) return "#ff4d4d"; 
+    if (score <= 4) return "#ffa500";
+    return "#00c853"; 
+  }
+
   const validate = () => {
     const newErrors = {};
-
-    
     const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
     if (!usernameRegex.test(userName)) {
-      newErrors.userName =
-        "Username must be 3–20 characters,no spaces.";
+      newErrors.userName = "Username must be 3–20 characters, letters, numbers, _ or -, no spaces.";
     }
 
-    
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
     if (!passwordRegex.test(password)) {
-      newErrors.password =
-        "Password must be at least 8 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 symbol.";
+      newErrors.password = "Password does not meet all requirements.";
     }
 
-   
     if (password !== passwordConfirm) {
       newErrors.passwordConfirm = "Passwords do not match.";
     }
 
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
   const register = async () => {
     if (!validate()) return;
-
- 
     const result = await context.register(userName, password);
     if (result) {
       navigate("/login");
@@ -90,6 +115,7 @@ const SignUpPage = () => {
           error={!!errors.userName}
           helperText={errors.userName}
         />
+
         <TextField
           label="Password"
           type="password"
@@ -97,10 +123,12 @@ const SignUpPage = () => {
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 1 }}
+          sx={{ mb: 0.5 }}
           error={!!errors.password}
           helperText={errors.password}
         />
+
+
         <TextField
           label="Confirm Password"
           type="password"
@@ -112,6 +140,53 @@ const SignUpPage = () => {
           error={!!errors.passwordConfirm}
           helperText={errors.passwordConfirm}
         />
+
+
+        {password && (
+          <Box sx={{ mb: 2, textAlign: "left" }}>
+            {requirements.map((req) => {
+              const passed = req.test(password);
+              return (
+                <Typography
+                  key={req.label}
+                  variant="body2"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: passed ? "#00c853" : "#ff4d4d",
+                  }}
+                >
+                  {passed ? <CheckIcon fontSize="small" /> : <CloseIcon fontSize="small" />}
+                  <span style={{ marginLeft: 4 }}>{req.label}</span>
+                </Typography>
+              );
+            })}
+          </Box>
+        )}
+
+        {password && (
+          <Box sx={{ mb: 2 }}>
+            <LinearProgress
+              variant="determinate"
+              value={(getPasswordStrength() / requirements.length) * 100}
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: "#e0e0e0",
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: getStrengthColor(),
+                },
+              }}
+            />
+            <Typography variant="caption" sx={{ color: getStrengthColor() }}>
+              {getPasswordStrength() <= 2
+                ? "Weak"
+                : getPasswordStrength() <= 4
+                ? "Medium"
+                : "Strong"}
+            </Typography>
+          </Box>
+        )}
 
         <Button
           variant="contained"
