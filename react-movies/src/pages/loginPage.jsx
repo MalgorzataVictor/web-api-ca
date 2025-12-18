@@ -11,7 +11,7 @@ const LoginPage = () => {
 
   const { from } = location.state
     ? { from: location.state.from.pathname }
-    : { from: "/home" };
+    : { from: "/profile" };
 
   const login = () => {
     context.authenticate(userName, password);

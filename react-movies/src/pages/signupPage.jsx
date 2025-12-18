@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { Navigate } from "react-router";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../contexts/authContext";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
@@ -10,15 +11,32 @@ const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [registered, setRegistered] = useState(false);
 
-  const register = () => {
+  const register = async () => {
+    // Password must have at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol
+    const passwordRegEx =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!passwordRegEx.test(password)) {
+      alert(
+        "Password must contain at least 8 characters, including uppercase, lowercase, number, and symbol."
+      );
+      return;
+    }
+
     if (password !== passwordConfirm) {
       alert("Passwords do not match!");
       return;
     }
-    context.register(userName, password);
-    navigate("/login");
+
+    const result = await context.register(userName, password);
+    if (result) setRegistered(true);
   };
+
+  if (registered) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <Box
@@ -41,11 +59,14 @@ const SignUpPage = () => {
           textAlign: "center",
         }}
       >
-        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}>
+        <Typography
+          variant="h4"
+          sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}
+        >
           Sign Up
         </Typography>
         <Typography variant="body1" sx={{ mb: 3, color: "#555" }}>
-          Create an account to access all features
+          Create an account to access all features. Username must be unique.
         </Typography>
 
         <TextField
@@ -94,7 +115,12 @@ const SignUpPage = () => {
           Already have an account?{" "}
           <Button
             onClick={() => navigate("/login")}
-            sx={{ color: "#cc0000", fontWeight: "bold", textTransform: "none", p: 0 }}
+            sx={{
+              color: "#cc0000",
+              fontWeight: "bold",
+              textTransform: "none",
+              p: 0,
+            }}
           >
             Log In
           </Button>
