@@ -49,7 +49,6 @@ const SiteHeader = () => {
     <>
       <AppBar position="fixed" sx={{ backgroundColor: "#cc0000" }}>
         <Toolbar sx={{ position: "relative" }}>
-          {/* Left: Logo */}
           <CardMedia
             component="img"
             image={img}
@@ -57,7 +56,6 @@ const SiteHeader = () => {
             sx={{ height: 64, width: 128 }}
           />
 
-          {/* Centered Title */}
           <Box
             sx={{
               position: "absolute",
@@ -71,14 +69,13 @@ const SiteHeader = () => {
             </Typography>
           </Box>
 
-          {/* Auth Buttons - positioned between title and drawer icon */}
           <Box
             sx={{
               display: "inline-flex",
               alignItems: "center",
               gap: 1,
               position: "absolute",
-              right: 48, // distance from the right edge / drawer icon
+              right: 48, 
               top: "50%",
               transform: "translateY(-50%)",
             }}
@@ -88,23 +85,35 @@ const SiteHeader = () => {
                 <Typography component="span" sx={{ fontWeight: "bold" }}>
                   Welcome, {context.userName}!
                 </Typography>
-                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => context.signout()}>
-                  Sign out
+                <Button
+                  color="inherit"
+                  sx={{ fontWeight: "bold" }}
+                  component={Link}
+                  to="/profile"
+                >
+                  Profile
                 </Button>
               </>
             ) : (
               <>
-                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => navigate("/login")}>
+                <Button
+                  color="inherit"
+                  sx={{ fontWeight: "bold" }}
+                  onClick={() => navigate("/login")}
+                >
                   Login
                 </Button>
-                <Button color="inherit" sx={{ fontWeight: "bold" }} onClick={() => navigate("/signup")}>
+                <Button
+                  color="inherit"
+                  sx={{ fontWeight: "bold" }}
+                  onClick={() => navigate("/signup")}
+                >
                   Signup
                 </Button>
               </>
             )}
           </Box>
 
-          {/* Right: Drawer Icon */}
           <IconButton
             color="inherit"
             edge="end"
