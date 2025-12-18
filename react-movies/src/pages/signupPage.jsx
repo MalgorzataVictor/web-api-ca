@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { Navigate } from "react-router";
 import { useNavigate } from "react-router";
 import { AuthContext } from "../contexts/authContext";
 import { Box, TextField, Button, Typography, Paper } from "@mui/material";
@@ -11,32 +10,47 @@ const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [registered, setRegistered] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const register = async () => {
-    // Password must have at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol
-    const passwordRegEx =
+  const validate = () => {
+    const newErrors = {};
+
+    
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+    if (!usernameRegex.test(userName)) {
+      newErrors.userName =
+        "Username must be 3–20 characters,no spaces.";
+    }
+
+    
+    const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-
-    if (!passwordRegEx.test(password)) {
-      alert(
-        "Password must contain at least 8 characters, including uppercase, lowercase, number, and symbol."
-      );
-      return;
+    if (!passwordRegex.test(password)) {
+      newErrors.password =
+        "Password must be at least 8 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 symbol.";
     }
 
+   
     if (password !== passwordConfirm) {
-      alert("Passwords do not match!");
-      return;
+      newErrors.passwordConfirm = "Passwords do not match.";
     }
 
-    const result = await context.register(userName, password);
-    if (result) setRegistered(true);
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
-  if (registered) {
-    return <Navigate to="/login" />;
-  }
+  const register = async () => {
+    if (!validate()) return;
+
+ 
+    const result = await context.register(userName, password);
+    if (result) {
+      navigate("/login");
+    } else {
+      setErrors({ ...errors, userName: "Username already exists." });
+    }
+  };
 
   return (
     <Box
@@ -59,14 +73,11 @@ const SignUpPage = () => {
           textAlign: "center",
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}
-        >
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}>
           Sign Up
         </Typography>
         <Typography variant="body1" sx={{ mb: 3, color: "#555" }}>
-          Create an account to access all features. Username must be unique.
+          Create an account to access all features
         </Typography>
 
         <TextField
@@ -75,7 +86,9 @@ const SignUpPage = () => {
           fullWidth
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: 1 }}
+          error={!!errors.userName}
+          helperText={errors.userName}
         />
         <TextField
           label="Password"
@@ -84,7 +97,9 @@ const SignUpPage = () => {
           fullWidth
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: 1 }}
+          error={!!errors.password}
+          helperText={errors.password}
         />
         <TextField
           label="Confirm Password"
@@ -94,6 +109,8 @@ const SignUpPage = () => {
           value={passwordConfirm}
           onChange={(e) => setPasswordConfirm(e.target.value)}
           sx={{ mb: 3 }}
+          error={!!errors.passwordConfirm}
+          helperText={errors.passwordConfirm}
         />
 
         <Button
@@ -115,12 +132,7 @@ const SignUpPage = () => {
           Already have an account?{" "}
           <Button
             onClick={() => navigate("/login")}
-            sx={{
-              color: "#cc0000",
-              fontWeight: "bold",
-              textTransform: "none",
-              p: 0,
-            }}
+            sx={{ color: "#cc0000", fontWeight: "bold", textTransform: "none", p: 0 }}
           >
             Log In
           </Button>
