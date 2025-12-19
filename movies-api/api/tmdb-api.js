@@ -117,3 +117,23 @@ export const getNowPlayingMovie = (page = 1) => {
       throw error;
     });
 };
+
+
+
+export const getGenres = () => {
+  return fetch(
+    "https://api.themoviedb.org/3/genre/movie/list?api_key=" +
+    process.env.TMDB_KEY +
+    "&language=en-US"
+  ).then((response) => {
+    if (!response.ok) {
+      return response.json().then((error) => {
+        throw new Error(error.status_message || "Something went wrong");
+      });
+    }
+    return response.json();
+  })
+    .catch((error) => {
+      throw error
+    });
+};

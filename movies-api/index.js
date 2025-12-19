@@ -4,6 +4,7 @@ import cors from 'cors';
 import usersRouter from './api/users';
 import './db';
 import moviesRouter from './api/movies';   
+import utilitiesRouter from './api/utilities';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(express.static('public'));
 
 app.use('/api/users', usersRouter);
 app.use('/api/movies', moviesRouter); 
+app.use('/api/utilities', utilitiesRouter);
 app.use(errHandler);
 
 
