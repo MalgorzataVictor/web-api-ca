@@ -90,7 +90,7 @@ export const getPopularMovie = (page = 1) => {
 
 export const getTopRatedMovie = (page = 1) => {
   return fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?api_key=${import.meta.env.VITE_TMDB_KEY}&page=${page}`
+    `http://localhost:8080/api/movies/top_rated?page=${page}`
   )
     .then((response) => {
       if (!response.ok) {

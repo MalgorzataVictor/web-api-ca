@@ -81,3 +81,21 @@ export const getPopularMovie = (page = 1) => {
       throw error;
     });
 };
+
+
+export const getTopRatedMovie = (page = 1) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.TMDB_KEY}&page=${page}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
