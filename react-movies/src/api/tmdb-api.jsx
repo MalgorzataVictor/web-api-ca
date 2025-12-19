@@ -17,7 +17,6 @@ export const getMovies = () => {
 
 
 export const getMovie = (args) => {
-  console.log(args)
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
@@ -259,7 +258,7 @@ export const getMovieVideos = ({ queryKey }) => {
 
 export const getPopularActor = (page = 1) => {
   return fetch(
-    `https://api.themoviedb.org/3/person/popular?api_key=${import.meta.env.VITE_TMDB_KEY}&page=${page}`
+   `http://localhost:8080/api/person/popular?page=${page}`
   )
     .then((response) => {
       if (!response.ok) {
@@ -279,7 +278,7 @@ export const getActorImages = ({ queryKey }) => {
   const [, idPart] = queryKey;
   const { id } = idPart;
   return fetch(
-    `https://api.themoviedb.org/3/person/${id}/images?api_key=${import.meta.env.VITE_TMDB_KEY}`
+    `http://localhost:8080/api/person/${id}/images`
   ).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
@@ -300,7 +299,7 @@ export const getActor = (args) => {
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
-    `https://api.themoviedb.org/3/person/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
+     `http://localhost:8080/api/person/${id}`
   ).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
