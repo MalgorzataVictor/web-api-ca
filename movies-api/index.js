@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import usersRouter from './api/users';
 import './db';
-//import authenticate from './authenticate';
 import moviesRouter from './api/movies';   
 
 dotenv.config();
