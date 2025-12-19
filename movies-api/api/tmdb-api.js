@@ -25,7 +25,7 @@ export const getMovie = (id) => {
     return response.json();
   })
     .catch((error) => {
-      throw error
+      throw error;
     });
 };
 
@@ -134,7 +134,7 @@ export const getGenres = () => {
     return response.json();
   })
     .catch((error) => {
-      throw error
+      throw error;
     });
 };
 
@@ -157,4 +157,93 @@ export const getLanguages = () => {
     console.error("Fetch error:", error);
     throw error;
   });
+};
+
+
+export const getMovieImages = (id) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/images?api_key=${process.env.TMDB_KEY}`
+  ).then((response) => {
+    if (!response.ok) {
+      return response.json().then((error) => {
+        throw new Error(error.status_message || "Something went wrong");
+      });
+    }
+    return response.json();
+  })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+export const getMovieReviews = (id) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_KEY}`
+  ).then((response) => {
+    if (!response.ok) {
+      return response.json().then((error) => {
+        throw new Error(error.status_message || "Something went wrong");
+      });
+    }
+    return response.json();
+  })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+export const getMovieRecommendations = (id) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/recommendations?api_key=${process.env.TMDB_KEY}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+export const getMovieCredits = (id) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/credits?api_key=${process.env.TMDB_KEY}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+
+export const getMovieVideos = (id) => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.TMDB_KEY}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      throw error;
+    });
 };
