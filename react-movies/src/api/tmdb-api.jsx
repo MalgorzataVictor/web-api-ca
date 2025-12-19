@@ -21,7 +21,7 @@ export const getMovie = (args) => {
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${import.meta.env.VITE_TMDB_KEY}`
+    `http://localhost:8080/api/movies/${id}`
   ).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
@@ -38,7 +38,7 @@ export const getMovie = (args) => {
 
 export const getTrendingMovie = (page = 1) => {
   return fetch(
-    `https://api.themoviedb.org/3/trending/movie/day?api_key=${import.meta.env.VITE_TMDB_KEY}&page=${page}`
+    `http://localhost:8080/api/movies/trending/today?page=${page}`
   )
     .then((response) => {
       if (!response.ok) {
