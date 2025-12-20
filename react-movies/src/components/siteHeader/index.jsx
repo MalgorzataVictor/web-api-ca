@@ -118,7 +118,7 @@ const SiteHeader = () => {
             color="inherit"
             edge="end"
             onClick={() => setDrawerOpen(true)}
-            sx={{ position: "absolute", right: 0 }}
+            sx={{ position: "absolute", right: 16 }}
           >
             <MenuIcon />
           </IconButton>

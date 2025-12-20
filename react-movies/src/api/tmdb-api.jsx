@@ -356,3 +356,15 @@ export const signup = async (username, password) => {
     });
     return response.json();
 };
+
+
+export const getFavourites = async () => {
+    const response = await fetch(
+        `http://localhost:8080/api/userStore`, {
+            headers: {
+                'Authorization': window.localStorage.getItem('token')
+            }
+        }
+    )
+    return response.json();
+};

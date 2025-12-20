@@ -7,6 +7,8 @@ import moviesRouter from './api/movies';
 import utilitiesRouter from './api/utilities';
 import movieRouter from './api/movie';   
 import actorRouter from './api/person';  
+import userStoreRouter from './api/userStore';
+import authenticate from './authenticate';
 
 dotenv.config();
 
@@ -35,6 +37,7 @@ app.use('/api/movies', moviesRouter);
 app.use('/api/utilities', utilitiesRouter);
 app.use('/api/movie', movieRouter);
 app.use('/api/person', actorRouter);
+app.use('/api/userStore', authenticate,userStoreRouter);
 app.use(errHandler);
 
 
