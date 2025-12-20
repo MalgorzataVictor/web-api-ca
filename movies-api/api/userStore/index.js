@@ -11,4 +11,20 @@ router.get('/', async (req, res) => {
 });
 
 
+router.put('/favourite', async (req, res) => {
+    const { movieId } = req.body;
+
+    if (!movieId) {
+        return res.status(400).json({ msg: 'movieId is required' });
+    }
+
+    const store = await UserStore.findOneAndUpdate(
+        { userId: req.user._id },
+        { $addToSet: { favouritesList: movieId } }, 
+        { new: true, upsert: true } 
+    );
+
+    res.status(200).json(store.favouritesList);
+});
+
 export default router;
