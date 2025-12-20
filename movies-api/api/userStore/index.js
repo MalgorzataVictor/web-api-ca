@@ -27,4 +27,21 @@ router.put('/favourite', async (req, res) => {
     res.status(200).json(store.favouritesList);
 });
 
+
+router.delete('/favourite', async (req, res) => {
+    const { movieId } = req.body;
+
+    if (!movieId) {
+        return res.status(400).json({ msg: 'movieId is required' });
+    }
+
+    const store = await UserStore.findOneAndUpdate(
+        { userId: req.user._id },
+        { $pull: { favouritesList: movieId } }, 
+        { new: true }
+    );
+
+    res.status(200).json(store?.favouritesList || []);
+});
+
 export default router;
