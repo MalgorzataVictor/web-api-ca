@@ -91,7 +91,7 @@ const Header = ({ movies = [], titleFilter, genreFilter, languageFilter, onUserI
         <ArrowBackIcon sx={{ color: "#cc0000" }} fontSize="large" />
       </IconButton>
 
-      <IconButton aria-label="home" onClick={() => navigate("/")}>
+      <IconButton aria-label="home" onClick={() => navigate("/home")}>
         <HomeIcon sx={{ color: "#cc0000" }} fontSize="large" />
       </IconButton>
 
@@ -172,7 +172,7 @@ const Header = ({ movies = [], titleFilter, genreFilter, languageFilter, onUserI
         <MenuItem onClick={() => handleSortSelect("rating-asc")}>Rating (Low → High)</MenuItem>
       </Menu>
 
-      <IconButton aria-label="favourites" onClick={() => navigate("movies/favorites")}>
+      <IconButton aria-label="favourites" onClick={() => navigate("/movies/favorites")}>
         <FavoriteIcon sx={{ color: "#cc0000" }} fontSize="large" />
       </IconButton>
 

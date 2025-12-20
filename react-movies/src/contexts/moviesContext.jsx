@@ -1,29 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { addFavourite, deleteFavourite, getFavourites } from "../api/tmdb-api";
+import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
 
 const MoviesContextProvider = (props) => {
-    const [favorites, setFavorites] = useState([])
-    const [watchlist, setWatchlist] = useState([])
-    const [myReviews, setMyReviews] = useState({})
+    const { authToken } = useContext(AuthContext); 
+    const [favorites, setFavorites] = useState([]);
+    const [watchlist, setWatchlist] = useState([]);
+    const [myReviews, setMyReviews] = useState({});
 
+    
     useEffect(() => {
         const fetchFavourites = async () => {
+            if (!authToken) { 
+                setFavorites([]); 
+                return;
+            }
+
             try {
                 const favs = await getFavourites();
-                setFavorites(favs[0].favouritesList);
+                setFavorites(favs[0]?.favouritesList || []);
             } catch (err) {
                 console.error("Failed to fetch favourites:", err);
+                setFavorites([]);
             }
         };
 
         fetchFavourites();
-    }, []);
-
+    }, [authToken]); 
 
     const addToFavorites = async (movie) => {
-
         if (!favorites.includes(movie.id)) {
             try {
                 const updatedFavs = await addFavourite(movie.id);
@@ -34,43 +41,27 @@ const MoviesContextProvider = (props) => {
         }
     };
 
-
     const removeFromFavorites = async (movie) => {
-            try {
-                const updatedFavs = await deleteFavourite(movie.id);
-                console.log(updatedFavs)
-                setFavorites(updatedFavs);
-                console.log(updatedFavs)
-            } catch (err) {
-                console.error("Failed to remove favourite:", err);
-            }
-        
+        try {
+            const updatedFavs = await deleteFavourite(movie.id);
+            setFavorites(updatedFavs);
+        } catch (err) {
+            console.error("Failed to remove favourite:", err);
+        }
     };
 
-
     const addToWatchlist = (movie) => {
-        let newMustWatch = [];
-        if (!watchlist.includes(movie.id)) {
-            newMustWatch = [...watchlist, movie.id];
-        }
-        else {
-            newMustWatch = [...watchlist];
-        }
-        setWatchlist(newMustWatch)
+        let newMustWatch = watchlist.includes(movie.id) ? [...watchlist] : [...watchlist, movie.id];
+        setWatchlist(newMustWatch);
+    };
+
+    const removeFromWatchlist = (movie) => {
+        setWatchlist(watchlist.filter((mId) => mId !== movie.id));
     };
 
     const addReview = (movie, review) => {
-        setMyReviews({ ...myReviews, [movie.id]: review })
+        setMyReviews({ ...myReviews, [movie.id]: review });
     };
-
-
-
-    const removeFromWatchlist = (movie) => {
-        setWatchlist(watchlist.filter(
-            (mId) => mId !== movie.id
-        ))
-    };
-
 
     return (
         <MoviesContext.Provider
@@ -87,7 +78,6 @@ const MoviesContextProvider = (props) => {
             {props.children}
         </MoviesContext.Provider>
     );
-
 };
 
 export default MoviesContextProvider;

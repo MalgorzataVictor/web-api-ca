@@ -55,7 +55,8 @@ const authenticate = async (username, password) => {
                 authenticate,
                 register,
                 signout,
-                userName
+                userName,
+                authToken 
             }}
         >
             {props.children} {/* eslint-disable-line */}
