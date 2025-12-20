@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { addFavourite, deleteFavourite, getFavourites } from "../api/tmdb-api";
 
 export const MoviesContext = React.createContext(null);
 
@@ -7,17 +8,45 @@ const MoviesContextProvider = (props) => {
     const [watchlist, setWatchlist] = useState([])
     const [myReviews, setMyReviews] = useState({})
 
+    useEffect(() => {
+        const fetchFavourites = async () => {
+            try {
+                const favs = await getFavourites();
+                setFavorites(favs[0].favouritesList);
+            } catch (err) {
+                console.error("Failed to fetch favourites:", err);
+            }
+        };
 
-    const addToFavorites = (movie) => {
-        let newFavorites = [];
+        fetchFavourites();
+    }, []);
+
+
+    const addToFavorites = async (movie) => {
+
         if (!favorites.includes(movie.id)) {
-            newFavorites = [...favorites, movie.id];
+            try {
+                const updatedFavs = await addFavourite(movie.id);
+                setFavorites(updatedFavs);
+            } catch (err) {
+                console.error("Failed to add favourite:", err);
+            }
         }
-        else {
-            newFavorites = [...favorites];
-        }
-        setFavorites(newFavorites)
     };
+
+
+    const removeFromFavorites = async (movie) => {
+            try {
+                const updatedFavs = await deleteFavourite(movie.id);
+                console.log(updatedFavs)
+                setFavorites(updatedFavs);
+                console.log(updatedFavs)
+            } catch (err) {
+                console.error("Failed to remove favourite:", err);
+            }
+        
+    };
+
 
     const addToWatchlist = (movie) => {
         let newMustWatch = [];
@@ -35,13 +64,8 @@ const MoviesContextProvider = (props) => {
     };
 
 
-    const removeFromFavorites = (movie) => {
-        setFavorites(favorites.filter(
-            (mId) => mId !== movie.id
-        ))
-    };
 
-     const removeFromWatchlist = (movie) => {
+    const removeFromWatchlist = (movie) => {
         setWatchlist(watchlist.filter(
             (mId) => mId !== movie.id
         ))
@@ -55,9 +79,9 @@ const MoviesContextProvider = (props) => {
                 addToFavorites,
                 removeFromFavorites,
                 addReview,
-                watchlist,   
+                watchlist,
                 addToWatchlist,
-                removeFromWatchlist 
+                removeFromWatchlist
             }}
         >
             {props.children}

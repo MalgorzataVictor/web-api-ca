@@ -9,9 +9,9 @@ export const getMovies = () => {
     }
     return response.json();
   })
-  .catch((error) => {
+    .catch((error) => {
       throw error
-  });
+    });
 };
 
 
@@ -143,19 +143,19 @@ export const getLanguages = () => {
   return fetch(
     `http://localhost:8080/api/utilities/configuration/languages`
   )
-  .then((response) => {
-    if (!response.ok) {
-      return response.json().then((error) => {
-        console.error("TMDB Error:", error);
-        throw new Error(error.status_message || "Something went wrong");
-      });
-    }
-    return response.json();
-  })
-  .catch((error) => {
-    console.error("Fetch error:", error);
-    throw error;
-  });
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((error) => {
+          console.error("TMDB Error:", error);
+          throw new Error(error.status_message || "Something went wrong");
+        });
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("Fetch error:", error);
+      throw error;
+    });
 };
 
 
@@ -182,7 +182,7 @@ export const getMovieReviews = ({ queryKey }) => {
   const [, idPart] = queryKey;
   const { id } = idPart;
   return fetch(
-  `http://localhost:8080/api/movie/${id}/reviews`
+    `http://localhost:8080/api/movie/${id}/reviews`
   ).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
@@ -201,7 +201,7 @@ export const getMovieRecommendations = ({ queryKey }) => {
   const [, idPart] = queryKey;
   const { id } = idPart;
   return fetch(
-     `http://localhost:8080/api/movie/${id}/recommendations`
+    `http://localhost:8080/api/movie/${id}/recommendations`
   )
     .then((response) => {
       if (!response.ok) {
@@ -221,7 +221,7 @@ export const getMovieCredits = ({ queryKey }) => {
   const [, idPart] = queryKey;
   const { id } = idPart;
   return fetch(
-  `http://localhost:8080/api/movie/${id}/credits`
+    `http://localhost:8080/api/movie/${id}/credits`
   )
     .then((response) => {
       if (!response.ok) {
@@ -258,7 +258,7 @@ export const getMovieVideos = ({ queryKey }) => {
 
 export const getPopularActor = (page = 1) => {
   return fetch(
-   `http://localhost:8080/api/person/popular?page=${page}`
+    `http://localhost:8080/api/person/popular?page=${page}`
   )
     .then((response) => {
       if (!response.ok) {
@@ -299,7 +299,7 @@ export const getActor = (args) => {
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
-     `http://localhost:8080/api/person/${id}`
+    `http://localhost:8080/api/person/${id}`
   ).then((response) => {
     if (!response.ok) {
       return response.json().then((error) => {
@@ -336,35 +336,76 @@ export const getActorCredits = ({ queryKey }) => {
 
 
 export const login = async (username, password) => {
-    const response = await fetch('http://localhost:8080/api/users', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify({ username: username, password: password })
-    });
-    return response.json();
+  const response = await fetch('http://localhost:8080/api/users', {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'post',
+    body: JSON.stringify({ username: username, password: password })
+  });
+  return response.json();
 };
 
 export const signup = async (username, password) => {
-    const response = await fetch('http://localhost:8080/api/users?action=register', {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'post',
-        body: JSON.stringify({ username: username, password: password })
-    });
-    return response.json();
+  const response = await fetch('http://localhost:8080/api/users?action=register', {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'post',
+    body: JSON.stringify({ username: username, password: password })
+  });
+  return response.json();
 };
 
 
 export const getFavourites = async () => {
-    const response = await fetch(
-        `http://localhost:8080/api/userStore`, {
-            headers: {
-                'Authorization': window.localStorage.getItem('token')
-            }
-        }
-    )
-    return response.json();
+  const response = await fetch(
+    `http://localhost:8080/api/userStore`, {
+    headers: {
+      'Authorization': window.localStorage.getItem('token')
+    }
+  }
+  )
+  return response.json();
+};
+
+
+
+export const addFavourite = async (id) => {
+  const data = { "movieId": id }
+  const res = await fetch(
+    `http://localhost:8080/api/userStore/favourite`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': window.localStorage.getItem('token')
+      },
+      body: JSON.stringify(data)
+    }
+  )
+  return res.json();
+};
+
+
+export const deleteFavourite = async (id) => {
+  const data = { movieId: id };
+  
+  const res = await fetch(
+    `http://localhost:8080/api/userStore/favourite`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to delete favorite');
+  }
+
+  return await res.json(); 
 };

@@ -29,11 +29,13 @@ router.put('/favourite', async (req, res) => {
 
 
 router.delete('/favourite', async (req, res) => {
+    console.log(req)
     const { movieId } = req.body;
 
     if (!movieId) {
         return res.status(400).json({ msg: 'movieId is required' });
     }
+    
 
     const store = await UserStore.findOneAndUpdate(
         { userId: req.user._id },
@@ -42,6 +44,7 @@ router.delete('/favourite', async (req, res) => {
     );
 
     res.status(200).json(store?.favouritesList || []);
+    
 });
 
 export default router;

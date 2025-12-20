@@ -83,7 +83,7 @@ const SiteHeader = () => {
             {context.isAuthenticated ? (
               <>
                 <Typography component="span" sx={{ fontWeight: "bold" }}>
-                  Welcome, {context.userName}!
+                  Hello, {context.userName}!
                 </Typography>
                 <Button
                   color="inherit"
