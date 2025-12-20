@@ -6,7 +6,6 @@ import {
   Paper,
   Typography,
   Button,
-  Avatar,
   TextField,
   LinearProgress,
 } from "@mui/material";
@@ -17,12 +16,7 @@ const ProfilePage = () => {
   const context = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [avatar, setAvatar] = useState(null);
-  const [showUsernameForm, setShowUsernameForm] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-
-  
-  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errors, setErrors] = useState({});
@@ -45,12 +39,6 @@ const ProfilePage = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (showUsernameForm) {
-      const usernameRegex = /^[a-zA-Z0-9_-]{3,20}$/;
-      if (!usernameRegex.test(userName)) {
-        newErrors.userName = "Username must be 3–20 characters, letters, numbers, _ or -, no spaces.";
-      }
-    }
     if (showPasswordForm) {
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
       if (!passwordRegex.test(password)) newErrors.password = "Password does not meet all requirements.";
@@ -60,21 +48,12 @@ const ProfilePage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const updateProfile = () => {
+  const updatePassword = () => {
     if (!validate()) return;
-    if (showUsernameForm) context.updateUsername(userName);
-    if (showPasswordForm) context.updatePassword(password);
-    setUserName("");
+    context.updatePassword(password);
     setPassword("");
     setPasswordConfirm("");
-    setShowUsernameForm(false);
     setShowPasswordForm(false);
-  };
-
-  const handleAvatarUpload = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setAvatar(URL.createObjectURL(e.target.files[0]));
-    }
   };
 
   return (
@@ -113,39 +92,8 @@ const ProfilePage = () => {
               </Typography>
             </Box>
 
-           
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-              <Avatar
-                src={avatar || "/default-avatar.png"}
-                sx={{ width: 100, height: 100 }}
-              />
-              <Box sx={{ display: "flex", gap: 2 }}>
-                <Button
-                  variant="contained"
-                  component="label"
-                  sx={{ backgroundColor: "#1976d2", "&:hover": { backgroundColor: "#115293" } }}
-                >
-                  Upload Avatar
-                  <input type="file" hidden accept="image/*" onChange={handleAvatarUpload} />
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => setAvatar(null)}
-                >
-                  Delete Avatar
-                </Button>
-              </Box>
-            </Box>
-
           
-            <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={() => setShowUsernameForm((prev) => !prev)}
-              >
-                Update Username
-              </Button>
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <Button
                 variant="outlined"
                 onClick={() => setShowPasswordForm((prev) => !prev)}
@@ -155,24 +103,6 @@ const ProfilePage = () => {
             </Box>
 
            
-            {showUsernameForm && (
-              <Box sx={{ textAlign: "left", mt: 2 }}>
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  Update Username
-                </Typography>
-                <TextField
-                  label="New Username"
-                  variant="outlined"
-                  fullWidth
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  error={!!errors.userName}
-                  helperText={errors.userName}
-                />
-              </Box>
-            )}
-
-            
             {showPasswordForm && (
               <Box sx={{ textAlign: "left", mt: 2 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
@@ -239,12 +169,12 @@ const ProfilePage = () => {
               </Box>
             )}
 
-          
+            
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
               <Button
                 variant="contained"
                 sx={{ backgroundColor: "#00c853", "&:hover": { backgroundColor: "#009624" }, flex: 1, py: 1.5 }}
-                onClick={updateProfile}
+                onClick={updatePassword}
               >
                 Save Changes
               </Button>
