@@ -23,7 +23,9 @@ export default function MovieCard({ movie, action }) {
   const { watchlist, addToWatchlist } = useContext(MoviesContext);
   const navigate = useNavigate();
 
-  movie.favorite = favorites.includes(movie.id);
+  movie.favorite = favorites.includes(movie.id.toString());
+  console.log(movie.id)
+  console.log(favorites)
   movie.mustwatch = watchlist.includes(movie.id);
 
   const handleAddToFavorite = (e) => {

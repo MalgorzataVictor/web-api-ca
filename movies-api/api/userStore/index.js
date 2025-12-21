@@ -4,7 +4,7 @@ import UserStore from './userStoreModel';
 
 const router = express.Router(); // eslint-disable-line
 
-// Get a user's favourites
+
 router.get('/', async (req, res) => {
     if (!req.user.isAuthenticated) {
         res.status(401).json({ msg: "Unauthorized" });
