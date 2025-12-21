@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 
-app.use('/api/users', usersRouter);
+app.use('/api/users', authenticate, usersRouter);
 app.use('/api/movies', moviesRouter); 
 app.use('/api/utilities', utilitiesRouter);
 app.use('/api/movie', movieRouter);

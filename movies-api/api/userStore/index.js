@@ -6,12 +6,18 @@ const router = express.Router(); // eslint-disable-line
 
 // Get a user's favourites
 router.get('/', async (req, res) => {
+    if (!req.user.isAuthenticated) {
+        res.status(401).json({ msg: "Unauthorized" });
+    }
     const favourties = await UserStore.find({ userId: `${req.user._id}`});
     res.status(200).json(favourties);
 });
 
 
 router.put('/favourite', async (req, res) => {
+    if (!req.user.isAuthenticated) {
+        res.status(401).json({ msg: "Unauthorized" });
+    }
     const { movieId } = req.body;
 
     if (!movieId) {
@@ -29,6 +35,9 @@ router.put('/favourite', async (req, res) => {
 
 
 router.delete('/favourite', async (req, res) => {
+    if (!req.user.isAuthenticated) {
+        res.status(401).json({ msg: "Unauthorized" });
+    }
     console.log(req)
     const { movieId } = req.body;
 

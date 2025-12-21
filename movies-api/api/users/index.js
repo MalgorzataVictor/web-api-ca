@@ -4,7 +4,8 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 
 
-const router = express.Router(); 
+
+const router = express.Router();
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -14,6 +15,7 @@ router.get('/', async (req, res) => {
 
 // register(Create)/Authenticate User
 router.post('/', asyncHandler(async (req, res) => {
+
     try {
         if (!req.body.username || !req.body.password) {
             return res.status(400).json({ success: false, msg: 'Username and password are required.' });
@@ -54,6 +56,7 @@ async function authenticateUser(req, res) {
         return res.status(401).json({ success: false, msg: 'Authentication failed. User not found.' });
     }
 
+
     const isMatch = await user.comparePassword(req.body.password);
     if (isMatch) {
         const token = jwt.sign({ username: user.username }, process.env.SECRET);
@@ -62,6 +65,42 @@ async function authenticateUser(req, res) {
         res.status(401).json({ success: false, msg: 'Wrong password.' });
     }
 }
+
+
+router.put('/password', asyncHandler(async (req, res) => {
+    if (!req.user.isAuthenticated) {
+        res.status(401).json({ msg: "Unauthorized" });
+    }
+    try {
+        const { newPassword } = req.body;
+        if (!newPassword) return res.status(400).json({ success: false, msg: 'New password is required.' });
+
+
+        const strongPasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+        if (!strongPasswordRegex.test(newPassword)) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Password must be at least 8 characters, include a letter, a digit, and a special character.'
+            });
+        }
+
+
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ success: true, msg: 'Password updated successfully.' });
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}));
+
 
 
 export default router;
