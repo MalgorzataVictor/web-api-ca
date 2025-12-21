@@ -12,6 +12,7 @@ import {
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { updatePassword } from "../api/tmdb-api";
+import Header from "../components/headerHome";
 
 
 
@@ -71,13 +72,15 @@ const ProfilePage = () => {
   };
 
   return (
+  <Box sx={{ width: "100%", minHeight: "100vh", backgroundColor: "#f5f5f5" }}>
+   
+    <Header title="Your Profile" />
+
     <Box
       sx={{
-        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
-        backgroundColor: "#f5f5f5",
         py: 4,
         px: 2,
       }}
@@ -98,14 +101,13 @@ const ProfilePage = () => {
         {context.isAuthenticated ? (
           <>
             <Box>
-              <Typography variant="h4" sx={{ mb: 1, fontWeight: "bold", color: "#cc0000" }}>
-                Profile
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2, color: "#555" }}>
+              <Typography
+                variant="body1"
+                sx={{ mb: 2, color: "#555" }}
+              >
                 Welcome, <strong>{context.userName}</strong>!
               </Typography>
             </Box>
-
 
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <Button
@@ -116,16 +118,15 @@ const ProfilePage = () => {
               </Button>
             </Box>
 
-
             {showPasswordForm && (
               <Box sx={{ textAlign: "left", mt: 2 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Update Password
                 </Typography>
+
                 <TextField
                   label="New Password"
                   type="password"
-                  variant="outlined"
                   fullWidth
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -133,10 +134,10 @@ const ProfilePage = () => {
                   error={!!errors.password}
                   helperText={errors.password}
                 />
+
                 <TextField
                   label="Confirm Password"
                   type="password"
-                  variant="outlined"
                   fullWidth
                   value={passwordConfirm}
                   onChange={(e) => setPasswordConfirm(e.target.value)}
@@ -146,7 +147,7 @@ const ProfilePage = () => {
                 />
 
                 {password && (
-                  <Box sx={{ mb: 2, textAlign: "left" }}>
+                  <Box sx={{ mb: 2 }}>
                     {requirements.map((req) => {
                       const passed = req.test(password);
                       return (
@@ -159,7 +160,11 @@ const ProfilePage = () => {
                             color: passed ? "#00c853" : "#ff4d4d",
                           }}
                         >
-                          {passed ? <CheckIcon fontSize="small" /> : <CloseIcon fontSize="small" />}
+                          {passed ? (
+                            <CheckIcon fontSize="small" />
+                          ) : (
+                            <CloseIcon fontSize="small" />
+                          )}
                           <span style={{ marginLeft: 4 }}>{req.label}</span>
                         </Typography>
                       );
@@ -176,19 +181,21 @@ const ProfilePage = () => {
                       borderRadius: 4,
                       backgroundColor: "#e0e0e0",
                       mb: 2,
-                      "& .MuiLinearProgress-bar": { backgroundColor: getStrengthColor() },
+                      "& .MuiLinearProgress-bar": {
+                        backgroundColor: getStrengthColor(),
+                      },
                     }}
                   />
                 )}
               </Box>
             )}
+
             {successMsg && (
               <Typography
                 variant="body2"
                 sx={{
                   color: "#00c853",
                   fontWeight: "bold",
-                  textAlign: "center",
                   mt: 1,
                 }}
               >
@@ -196,18 +203,26 @@ const ProfilePage = () => {
               </Typography>
             )}
 
-
-            <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
+            <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#00c853", "&:hover": { backgroundColor: "#009624" }, flex: 1, py: 1.5 }}
+                sx={{
+                  backgroundColor: "#00c853",
+                  "&:hover": { backgroundColor: "#009624" },
+                  flex: 1,
+                }}
                 onClick={updatePasswordForm}
               >
                 Save Changes
               </Button>
+
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#d32f2f", "&:hover": { backgroundColor: "#9a0007" }, flex: 1, py: 1.5 }}
+                sx={{
+                  backgroundColor: "#d32f2f",
+                  "&:hover": { backgroundColor: "#9a0007" },
+                  flex: 1,
+                }}
                 onClick={() => context.signout()}
               >
                 Sign Out
@@ -215,20 +230,23 @@ const ProfilePage = () => {
             </Box>
           </>
         ) : (
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}>
+          <Box>
+            <Typography
+              variant="h5"
+              sx={{ mb: 2, fontWeight: "bold", color: "#cc0000" }}
+            >
               Access Denied
             </Typography>
+
             <Typography variant="body1" sx={{ mb: 3, color: "#555" }}>
               You must log in to see your profile.
             </Typography>
+
             <Button
               variant="contained"
               sx={{
                 backgroundColor: "#cc0000",
                 "&:hover": { backgroundColor: "#990000" },
-                fontWeight: "bold",
-                py: 1.5,
               }}
               onClick={() => navigate("/login")}
             >
@@ -238,7 +256,9 @@ const ProfilePage = () => {
         )}
       </Paper>
     </Box>
-  );
+  </Box>
+);
+
 };
 
 export default ProfilePage;

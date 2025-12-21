@@ -40,7 +40,7 @@ const HomePage = () => {
   return (
     
     <Box sx={{ width: "100%", backgroundColor: "#f0f0f0", minHeight: "100vh" }}>
-      <Header />
+      <Header title="Home Page" />
        <Helmet>
         <title>Malgosia Movies</title>
       </Helmet>

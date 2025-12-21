@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.put('/favourite', async (req, res) => {
+router.post('/favourite', async (req, res) => {
     if (!req.user.isAuthenticated) {
         res.status(401).json({ msg: "Unauthorized" });
     }

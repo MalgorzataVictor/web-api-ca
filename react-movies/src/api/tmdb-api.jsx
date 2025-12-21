@@ -376,7 +376,7 @@ export const addFavourite = async (id) => {
   const res = await fetch(
     `http://localhost:8080/api/userStore/favourite`,
     {
-      method: 'PUT',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': window.localStorage.getItem('token')
