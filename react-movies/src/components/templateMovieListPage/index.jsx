@@ -47,7 +47,6 @@ function MovieListPageTemplate({ movies, title, action }) {
         setGenreFilter(value);
         break;
       case "language":
-        console.log(value)
         setLanguageFilter(value);
         break;
       case "sort":

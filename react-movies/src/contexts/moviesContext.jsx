@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { addFavourite, deleteFavourite, getFavourites } from "../api/tmdb-api";
+import { addFavourite, deleteFavourite, getFavourites, addWatchlist, deleteWatchlist, getWatchlist } from "../api/tmdb-api";
 import { AuthContext } from "./authContext";
 
 export const MoviesContext = React.createContext(null);
@@ -30,6 +30,27 @@ const MoviesContextProvider = (props) => {
         fetchFavourites();
     }, [authToken]); 
 
+
+     useEffect(() => {
+        const fetchWatchlist = async () => {
+            if (!authToken) { 
+                setWatchlist([]); 
+                return;
+            }
+
+            try {
+                const mustwatch = await getWatchlist();
+                setWatchlist(mustwatch[0]?.watchList || []);
+            } catch (err) {
+                console.error("Failed to fetch watchlist:", err);
+                setWatchlist([]);
+            }
+        };
+
+        fetchWatchlist();
+    }, [authToken]); 
+
+
     const addToFavorites = async (movie) => {
         if (!favorites.includes(movie.id)) {
             try {
@@ -50,13 +71,25 @@ const MoviesContextProvider = (props) => {
         }
     };
 
-    const addToWatchlist = (movie) => {
-        let newMustWatch = watchlist.includes(movie.id) ? [...watchlist] : [...watchlist, movie.id];
-        setWatchlist(newMustWatch);
+
+      const addToWatchlist = async (movie) => {
+        if (!watchlist.includes(movie.id)) {
+            try {
+                const updatedWatchList = await addWatchlist(movie.id);
+                setWatchlist(updatedWatchList);
+            } catch (err) {
+                console.error("Failed to add to watchlist:", err);
+            }
+        }
     };
 
-    const removeFromWatchlist = (movie) => {
-        setWatchlist(watchlist.filter((mId) => mId !== movie.id));
+        const removeFromWatchlist = async (movie) => {
+        try {
+            const updatedWatchList = await deleteWatchlist(movie.id);
+            setWatchlist(updatedWatchList);
+        } catch (err) {
+            console.error("Failed to remove from watchlist:", err);
+        }
     };
 
     const addReview = (movie, review) => {

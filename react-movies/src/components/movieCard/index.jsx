@@ -24,9 +24,7 @@ export default function MovieCard({ movie, action }) {
   const navigate = useNavigate();
 
   movie.favorite = favorites.includes(movie.id.toString());
-  console.log(movie.id)
-  console.log(favorites)
-  movie.mustwatch = watchlist.includes(movie.id);
+  movie.mustwatch = watchlist.includes(movie.id.toString());
 
   const handleAddToFavorite = (e) => {
     addToFavorites(movie);

@@ -295,7 +295,7 @@ export const getActorImages = ({ queryKey }) => {
 
 
 export const getActor = (args) => {
-  console.log(args)
+
   const [, idPart] = args.queryKey;
   const { id } = idPart;
   return fetch(
@@ -369,12 +369,39 @@ export const getFavourites = async () => {
   return response.json();
 };
 
+export const getWatchlist = async () => {
+  const response = await fetch(
+    `http://localhost:8080/api/userStore`, {
+    headers: {
+      'Authorization': window.localStorage.getItem('token')
+    }
+  }
+  )
+  return response.json();
+};
+
 
 
 export const addFavourite = async (id) => {
   const data = { "movieId": id }
   const res = await fetch(
     `http://localhost:8080/api/userStore/favourite`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': window.localStorage.getItem('token')
+      },
+      body: JSON.stringify(data)
+    }
+  )
+  return res.json();
+};
+
+export const addWatchlist = async (id) => {
+  const data = { "movieId": id }
+  const res = await fetch(
+    `http://localhost:8080/api/userStore/watchlist`,
     {
       method: 'POST',
       headers: {
@@ -405,6 +432,29 @@ export const deleteFavourite = async (id) => {
 
   if (!res.ok) {
     throw new Error('Failed to delete favorite');
+  }
+
+  return await res.json(); 
+};
+
+
+export const deleteWatchlist = async (id) => {
+  const data = { movieId: id };
+  
+  const res = await fetch(
+    `http://localhost:8080/api/userStore/watchlist`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to delete movie');
   }
 
   return await res.json(); 
