@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { updatePassword } from "../api/tmdb-api";
+
+
 
 const ProfilePage = () => {
   const context = useContext(AuthContext);
@@ -20,6 +23,7 @@ const ProfilePage = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [errors, setErrors] = useState({});
+  const [successMsg, setSuccessMsg] = useState("");
 
   const requirements = [
     { label: "At least 8 characters", test: (pw) => pw.length >= 8 },
@@ -48,12 +52,22 @@ const ProfilePage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const updatePassword = () => {
+  const updatePasswordForm = async () => {
     if (!validate()) return;
-    context.updatePassword(password);
-    setPassword("");
-    setPasswordConfirm("");
-    setShowPasswordForm(false);
+
+    try {
+      await updatePassword(password);
+      setSuccessMsg("Changes saved successfully ✅");
+
+      setPassword("");
+      setPasswordConfirm("");
+      setShowPasswordForm(false);
+
+
+      setTimeout(() => setSuccessMsg(""), 3000);
+    } catch (err) {
+      setErrors({ password: "Failed to update password. Try again." });
+    }
   };
 
   return (
@@ -92,7 +106,7 @@ const ProfilePage = () => {
               </Typography>
             </Box>
 
-          
+
             <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
               <Button
                 variant="outlined"
@@ -102,7 +116,7 @@ const ProfilePage = () => {
               </Button>
             </Box>
 
-           
+
             {showPasswordForm && (
               <Box sx={{ textAlign: "left", mt: 2 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
@@ -168,13 +182,26 @@ const ProfilePage = () => {
                 )}
               </Box>
             )}
+            {successMsg && (
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "#00c853",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  mt: 1,
+                }}
+              >
+                {successMsg}
+              </Typography>
+            )}
 
-            
+
             <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 3 }}>
               <Button
                 variant="contained"
                 sx={{ backgroundColor: "#00c853", "&:hover": { backgroundColor: "#009624" }, flex: 1, py: 1.5 }}
-                onClick={updatePassword}
+                onClick={updatePasswordForm}
               >
                 Save Changes
               </Button>

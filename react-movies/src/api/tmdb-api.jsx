@@ -409,3 +409,25 @@ export const deleteFavourite = async (id) => {
 
   return await res.json(); 
 };
+
+
+export const updatePassword = async (updatedpassword) => {
+  const data = { newPassword: updatedpassword };
+  const res = await fetch(
+    `http://localhost:8080/api/users/password`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to update password');
+  }
+
+  return await res.json(); 
+};
